@@ -10,7 +10,31 @@ export class JsonConfigProvider implements HumioConfigProvider<Config> {
         const fileName = path.dirname(new URL(import.meta.url).pathname)
         const jsonPath = path.join(fileName, "..", "..", "..", configFileName)
 
-        this.configs = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+        try {
+            if (fs.existsSync(jsonPath)) {
+                this.configs = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+            } else {
+                console.warn(`Configuration file not found at ${jsonPath}, using default configuration`);
+                this.configs = this.getDefaultConfigs();
+            }
+        } catch (error) {
+            console.warn(`Failed to load configuration from ${jsonPath}, using default configuration: ${error}`);
+            this.configs = this.getDefaultConfigs();
+        }
+    }
+
+    private getDefaultConfigs(): Config[] {
+        return [
+            {
+                name: "criticalErrors",
+                description: "Finds critical errors grouped by message and stack trace",
+                query: "severity = crit | groupBy([message, stack_trace])",
+                fields: ["message", "stack_trace", "_count"],
+                variables: [],
+                outputTemplate: "Error \"{{message}}\" occurred in total: {{_count}} times. The Stack trace is \n---{{stack_trace}}\n---\n\n",
+                joinString: "\n"
+            }
+        ];
     }
 
     getAllConfigs() {

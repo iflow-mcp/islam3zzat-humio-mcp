@@ -1,0 +1,1 @@
+{"serverConfig": "{\"mcpServers\":{\"humioMCP\":{\"command\":\"npx\",\"args\":[\"-y\",\"@iflow-mcp/islam3zzat-humio-mcp\"],\"env\":{\"HUMIO_API_TOKEN\":\"${HUMIO_API_TOKEN}\"},\"values\":{\"HUMIO_API_TOKEN\":{\"type\":\"string\",\"title\":\"Humio API Token\",\"description\":\"Your Humio API token for authentication\",\"default\":\"test_token\"}}}}}"}
